@@ -1,0 +1,36 @@
+{
+	"name": "aws-login",
+	"version": "1.0.0",
+	"description": "Assume temporary credentials for AWS using STS.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"bin": {
+		"aws-login": "./index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mhvelplund/aws-login.git"
+	},
+	"keywords": [
+		"aws",
+		"sts"
+	],
+	"author": "Mads Hvelplund <mhvelplund@users.noreply.github.com>",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/mhvelplund/aws-login/issues"
+	},
+	"homepage": "https://github.com/mhvelplund/aws-login#readme",
+	"dependencies": {
+		"aws-sdk": "^2.575.0",
+		"commander": "^4.0.1",
+		"configparser": "^0.3.6",
+		"enquirer": "^2.3.4",
+		"node-html-parser": "^1.1.18",
+		"request": "^2.88.0",
+		"xmldom": "^0.2.1",
+		"xpath": "0.0.27"
+	}
+}
