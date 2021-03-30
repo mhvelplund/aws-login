@@ -14,48 +14,44 @@ async function assumeRoleWithSAML(program, role, assertion) {
 	const [PrincipalArn, RoleArn] = role.split(",");
 	const sts = new AWS.STS();
 
-	sts.assumeRoleWithSAML(
-		{
-			DurationSeconds: program.tokenDuration,
-			PrincipalArn,
-			RoleArn,
-			SAMLAssertion: assertion
-		},
-		(error, data) => {
-			if (error) {
-				console.error("ERROR", error.message);
-				process.exit(1);
-			} else {
-				const { Credentials, AssumedRoleUser } = data;
-				const {
-					AccessKeyId,
-					SecretAccessKey,
-					SessionToken,
-					Expiration
-				} = Credentials;
-				const Arn = AssumedRoleUser.Arn;
+	try {
+		let data = await sts.assumeRoleWithSAML(
+			{
+				DurationSeconds: program.tokenDuration,
+				PrincipalArn,
+				RoleArn,
+				SAMLAssertion: assertion
+			}).promise();
+		const { Credentials, AssumedRoleUser } = data;
+		const {
+			AccessKeyId,
+			SecretAccessKey,
+			SessionToken,
+			Expiration
+		} = Credentials;
+		const Arn = AssumedRoleUser.Arn;
 
-				console.log(
-					`Assumed "${Arn}" as "${program.profile}" until "${Expiration}"`
-				);
-				const credentialFile = `${require("os").homedir()}/.aws/credentials`;
-				const ConfigParser = require("configparser");
-				const config = new ConfigParser();
-				config.read(credentialFile);
-				if (!config.hasSection(program.profile)) {
-					config.addSection(program.profile);
-				}
-				config.set(program.profile, "aws_access_key_id", AccessKeyId);
-				config.set(
-					program.profile,
-					"aws_secret_access_key",
-					SecretAccessKey
-				);
-				config.set(program.profile, "aws_session_token", SessionToken);
-				config.write(credentialFile);
-			}
+		console.log(`Assumed "${Arn}" as "${program.profile}" until "${Expiration}"`);
+
+		const credentialFile = `${require("os").homedir()}/.aws/credentials`;
+		const ConfigParser = require("configparser");
+		const config = new ConfigParser();
+		config.read(credentialFile);
+		if (!config.hasSection(program.profile)) {
+			config.addSection(program.profile);
 		}
-	);
+		config.set(program.profile, "aws_access_key_id", AccessKeyId);
+		config.set(
+			program.profile,
+			"aws_secret_access_key",
+			SecretAccessKey
+		);
+		config.set(program.profile, "aws_session_token", SessionToken);
+		config.write(credentialFile);
+	} catch (error) {
+		console.error("ERROR", error.message);
+		process.exit(1);
+	}
 }
 
 program.version(package_json.version).description(package_json.description);
@@ -84,11 +80,6 @@ program
 		"specify which profile name to store settings in.",
 		"default"
 	);
-// .option(
-// 	"-d, --domain [domain]",
-// 	"specify domain. (default: current Windows domain)",
-// 	process.env.USERDOMAIN || defaultdomain
-// )
 
 program.parse(process.argv);
 
@@ -201,6 +192,5 @@ prompt(prompts).then(answers => {
 						process.exit(1);
 					});
 			}
-			// TODO: check if more than one role was returned and ask which one to use
 		});
 });
