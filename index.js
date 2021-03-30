@@ -125,8 +125,8 @@ prompt(prompts).then(answers => {
 
 	const inputPar = {
 		UserName: username,
-		Kmsi: "True",
-		Password: password
+		Password: password,
+		AuthMethod: "FormsAuthentication"
 	};
 
 	let assertion;
@@ -135,7 +135,7 @@ prompt(prompts).then(answers => {
 		method: "POST",
 		followAllRedirects: true,
 		form: inputPar,
-		url: `https://${adfsServer}/adfs/ls/idpInitiatedSignOn.aspx?loginToRp=urn:amazon:webservices`,
+		url: `https://${adfsServer}/adfs/ls/IdpInitiatedSignOn.aspx?loginToRp=urn:amazon:webservices`,
 		jar: true
 	})
 		.catch(error => {
