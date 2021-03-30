@@ -2,12 +2,14 @@
 	"name": "aws-login",
 	"version": "1.0.0",
 	"description": "Assume temporary credentials for AWS using STS.",
-	"main": "index.js",
+	"main": "dist/index.js",
 	"scripts": {
+		"build": "tsc;./shebangify.js dist/index.js; chmod +x dist/index.js",
+		"watch": "tsc -w",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"bin": {
-		"aws-login": "./index.js"
+		"aws-login": "./dist/index.js"
 	},
 	"repository": {
 		"type": "git",
@@ -32,5 +34,11 @@
 		"request": "^2.88.0",
 		"xmldom": "^0.5.0",
 		"xpath": "0.0.27"
+	},
+	"devDependencies": {
+		"@tsconfig/node14": "^1.0.0",
+		"@types/node": "^14.14.37",
+		"@types/xmldom": "^0.1.30",
+		"typescript": "^4.2.3"
 	}
 }
